@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUANA MOTH</title>
+    <style>
+        @font-face {
+            font-family: 'EccoEpilogue';
+            src: url('media/eccoepilogue-v2.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'EccoEpilogue', monospace;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: none;
+            font-smooth: never;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            background-color: #0a0a0a;
+            background-image: url('media/Background.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* CRT screen effect */
+        .crt-overlay {
+            content: "";
+            display: block;
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.25) 50%
+            );
+            background-size: 100% 4px;
+            opacity: 0.5;
+            z-index: 2;
+        }
+
+        /* Noise overlay */
+        .noise-overlay {
+            content: "";
+            display: block;
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            background: 
+                repeating-radial-gradient(#000 0 0.0001%, #fff 0 0.0002%) 50% 0/2500px 2500px,
+                repeating-conic-gradient(#000 0 0.0001%, #fff 0 0.0002%) 50% 50%/2500px 2500px;
+            background-blend-mode: soft-light;
+            opacity: 0.05;
+            z-index: 3;
+            animation: noise 0.5s infinite;
+        }
+
+        /* Vignette overlay */
+        .vignette-overlay {
+            content: "";
+            display: block;
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle at center,
+                transparent 0,
+                rgba(0, 0, 0, 0.2) 90%,
+                rgba(0, 0, 0, 0.4) 100%
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body {
+            color: #e0e0e0;
+            line-height: 1;
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.97; }
+            5% { opacity: 0.95; }
+            10% { opacity: 0.9; }
+            15% { opacity: 0.95; }
+            20% { opacity: 1; }
+            80% { opacity: 0.95; }
+            85% { opacity: 0.9; }
+            90% { opacity: 0.95; }
+            100% { opacity: 0.97; }
+        }
+
+        @keyframes noise {
+            0% { transform: translate(0,0) }
+            10% { transform: translate(-5%,-5%) }
+            20% { transform: translate(-10%,5%) }
+            30% { transform: translate(5%,-10%) }
+            40% { transform: translate(-5%,15%) }
+            50% { transform: translate(-10%,5%) }
+            60% { transform: translate(15%,0) }
+            70% { transform: translate(0,10%) }
+            80% { transform: translate(-15%,0) }
+            90% { transform: translate(10%,5%) }
+            100% { transform: translate(5%,0) }
+        }
+        
+        /* Glitch transition effect */
+        .glitch-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 100;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+            pointer-events: none;
+        }
+        
+        .glitch-transition.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .glitch-transition.forward {
+            animation: glitchEffect-forward 0.8s forwards;
+        }
+        
+        .glitch-transition.backward {
+            animation: glitchEffect-backward 0.8s forwards;
+        }
+        
+        .glitch-scan {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.6);
+            z-index: 101;
+            opacity: 0;
+        }
+        
+        @keyframes glitchEffect {
+            0% {
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.6;
+                transform: translate(5px, 0);
+            }
+            10% {
+                opacity: 0.4;
+                transform: translate(-5px, 0) scale(1.05, 1);
+            }
+            15% {
+                opacity: 0.8;
+                transform: translate(0, 0);
+            }
+            20% {
+                opacity: 0.3;
+                transform: translate(15px, 0) scale(0.95, 1);
+            }
+            25% {
+                opacity: 0.9;
+                transform: translate(-15px, 0);
+            }
+            30% {
+                opacity: 0.5;
+                transform: translate(0, 0) scale(1.1, 1);
+            }
+            35% {
+                opacity: 0.7;
+                transform: translate(5px, 0);
+            }
+            40% {
+                opacity: 0.3;
+                transform: translate(-5px, 0);
+            }
+            45% {
+                opacity: 0.9;
+                transform: translate(0, 0) scale(0.95, 1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translate(10px, 0);
+            }
+            55% {
+                opacity: 0.8;
+                transform: translate(-10px, 0) scale(1.05, 1);
+            }
+            60% {
+                opacity: 0.4;
+                transform: translate(0, 0);
+            }
+            65% {
+                opacity: 0.9;
+                transform: translate(5px, 0);
+            }
+            70% {
+                opacity: 0.7;
+                transform: translate(-5px, 0) scale(0.98, 1);
+            }
+            75% {
+                opacity: 0.5;
+                transform: translate(0, 0);
+            }
+            80% {
+                opacity: 0.3;
+                transform: translate(8px, 0) scale(1.02, 1);
+            }
+            85% {
+                opacity: 0.9;
+                transform: translate(-8px, 0);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translate(0, 0);
+            }
+            95% {
+                opacity: 0.5;
+                transform: translate(3px, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, 0);
+            }
+        }
+        
+        @keyframes scanline-down {
+            0% {
+                top: -10px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+        
+        @keyframes scanline-up {
+            0% {
+                top: 100%;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                top: -10px;
+                opacity: 0;
+            }
+        }
+        
+        @keyframes glitchEffect-forward {
+            0% {
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.6;
+                transform: translate(5px, 0);
+            }
+            10% {
+                opacity: 0.4;
+                transform: translate(-5px, 0) scale(1.05, 1);
+            }
+            15% {
+                opacity: 0.8;
+                transform: translate(0, 0);
+            }
+            20% {
+                opacity: 0.3;
+                transform: translate(15px, 0) scale(0.95, 1);
+            }
+            25% {
+                opacity: 0.9;
+                transform: translate(-15px, 0);
+            }
+            30% {
+                opacity: 0.5;
+                transform: translate(0, 0) scale(1.1, 1);
+            }
+            35% {
+                opacity: 0.7;
+                transform: translate(5px, 0);
+            }
+            40% {
+                opacity: 0.3;
+                transform: translate(-5px, 0);
+            }
+            45% {
+                opacity: 0.9;
+                transform: translate(0, 0) scale(0.95, 1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: translate(10px, 0);
+            }
+            55% {
+                opacity: 0.8;
+                transform: translate(-10px, 0) scale(1.05, 1);
+            }
+            60% {
+                opacity: 0.4;
+                transform: translate(0, 0);
+            }
+            65% {
+                opacity: 0.9;
+                transform: translate(5px, 0);
+            }
+            70% {
+                opacity: 0.7;
+                transform: translate(-5px, 0) scale(0.98, 1);
+            }
+            75% {
+                opacity: 0.5;
+                transform: translate(0, 0);
+            }
+            80% {
+                opacity: 0.3;
+                transform: translate(8px, 0) scale(1.02, 1);
+            }
+            85% {
+                opacity: 0.9;
+                transform: translate(-8px, 0);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translate(0, 0);
+            }
+            95% {
+                opacity: 0.5;
+                transform: translate(3px, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, 0);
+            }
+        }
+        
+        @keyframes glitchEffect-backward {
+            0% {
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.7;
+                transform: translate(-8px, 0);
+            }
+            10% {
+                opacity: 0.5;
+                transform: translate(8px, 0) scale(0.97, 1);
+            }
+            15% {
+                opacity: 0.9;
+                transform: translate(0, 0);
+            }
+            20% {
+                opacity: 0.4;
+                transform: translate(-12px, 0) scale(1.03, 1);
+            }
+            25% {
+                opacity: 0.8;
+                transform: translate(12px, 0);
+            }
+            30% {
+                opacity: 0.3;
+                transform: translate(0, 0) scale(0.94, 1);
+            }
+            35% {
+                opacity: 0.6;
+                transform: translate(-7px, 0);
+            }
+            40% {
+                opacity: 0.2;
+                transform: translate(7px, 0);
+            }
+            45% {
+                opacity: 0.7;
+                transform: translate(0, 0) scale(1.05, 1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: translate(-5px, 0);
+            }
+            55% {
+                opacity: 0.9;
+                transform: translate(5px, 0) scale(0.98, 1);
+            }
+            60% {
+                opacity: 0.5;
+                transform: translate(0, 0);
+            }
+            65% {
+                opacity: 0.8;
+                transform: translate(-3px, 0);
+            }
+            70% {
+                opacity: 0.6;
+                transform: translate(3px, 0) scale(1.02, 1);
+            }
+            75% {
+                opacity: 0.4;
+                transform: translate(0, 0);
+            }
+            80% {
+                opacity: 0.2;
+                transform: translate(-10px, 0) scale(0.96, 1);
+            }
+            85% {
+                opacity: 0.7;
+                transform: translate(10px, 0);
+            }
+            90% {
+                opacity: 0.5;
+                transform: translate(0, 0);
+            }
+            95% {
+                opacity: 0.3;
+                transform: translate(-2px, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, 0);
+            }
+        }
+
+        /* Enhance the visibility of content against the background image */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Add a subtle background only to media elements */
+        .chapter-item {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+        }
+        
+        /* Add text shadow to improve readability without backgrounds */
+        h1, h2, p, .menu-option, .division-option, .back-button {
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9),
+                         0 0 20px rgba(0, 0, 0, 0.8),
+                         0 0 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        header {
+            padding: 2rem;
+            background-color: transparent;
+        }
+
+        h1 {
+            font-size: 5rem;
+            letter-spacing: -3px;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+        }
+
+        header p {
+            font-size: 1.5rem;
+        }
+
+        /* Landing page styles */
+        .menu-options {
+            list-style: none;
+            margin: 4rem auto;
+            width: fit-content;
+            text-align: left;
+        }
+
+        .menu-option {
+            font-size: 2.5rem;
+            margin: 2rem 0;
+            cursor: pointer;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-option {
+            position: relative;
+            padding-left: 3.5rem;
+        }
+        
+        .menu-option:hover:before {
+            content: ">> ";
+            position: absolute;
+            left: 0;
+        }
+
+        .menu-option:hover {
+            transform: translateX(5px);
+        }
+
+        .menu-option.active {
+            color: #fff;
+            position: relative;
+        }
+
+        /* Division selection styles */
+        .division-options {
+            list-style: none;
+            margin: 2rem auto;
+            text-align: left;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .division-option {
+            position: relative;
+            font-size: 2rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            padding-left: 3.5rem;
+            cursor: pointer;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .division-option:hover {
+            transform: translateX(5px);
+        }
+        
+        .division-option:hover:before {
+            content: ">> ";
+            position: absolute;
+            left: 0;
+        }
+
+        .division-description {
+            position: absolute;
+            left: 2rem;
+            top: 30%;
+            max-width: 400px;
+            font-size: 1.2rem;
+            color: #aaa;
+            text-align: left;
+        }
+
+        /* Bio page styles */
+        .bio-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .bio-block {
+            background: rgba(26, 26, 26, 0.7);
+            padding: 2rem;
+            border-radius: 5px;
+        }
+
+        .bio-block h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+        }
+
+        .bio-block p {
+            font-size: 1.5rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        /* Media page styles */
+        .audio-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        audio {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-flow: column;
+            grid-template-rows: repeat(6, auto);
+            gap: 1rem;
+        }
+
+        .chapter-item {
+            font-size: 1.4rem;
+            padding: 1.25rem 1rem;
+            background: rgba(26, 26, 26, 0.7);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+        }
+
+        .chapter-item:hover {
+            background: #252525;
+            transform: translateX(5px);
+        }
+
+        .current-chapter {
+            background: #2a2a2a;
+            border-left: 4px solid #fff;
+        }
+
+        /* Navigation */
+        .back-button {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding-left: 3.5rem;
+            text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
+                         0 0 10px rgba(224, 224, 224, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .back-button:hover:before {
+            content: ">> ";      
+            position: absolute;
+            left: 0; 
+        }
+
+        .back-button:hover {
+            transform: translateX(5px);
+        }
+
+        /* Page sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3.5rem;
+            }
+
+            .menu-option {
+                font-size: 2rem;
+            }
+
+            .division-option {
+                font-size: 1.5rem;
+            }
+
+            .division-description {
+                position: static;
+                margin: 1rem auto;
+                text-align: center;
+            }
+
+            .chapter-list {
+                grid-template-columns: 1fr;
+                grid-auto-flow: row;
+                grid-template-rows: auto;
+            }
+
+            .chapter-item {
+                font-size: 1.2rem;
+                min-height: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="vignette-overlay"></div>
+    <div class="crt-overlay"></div>
+    <div class="noise-overlay"></div>
+    <div class="glitch-transition">
+        <div class="glitch-scan"></div>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landing" class="page-section active">
+        <div class="container">
+            <header>
+                <h1>LUANA MOTH</h1>
+            </header>
+            <ul class="menu-options">
+                <li class="menu-option" data-page="bio">BIO</li>
+                <li class="menu-option" data-page="media">MEDIA</li>
+                <li class="menu-option" data-page="participate">PARTICIPATE</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bio Page -->
+    <div id="bio" class="page-section">
+        <div class="container">
+            <div class="back-button" data-page="landing">BACK</div>
+            <header>
+                <h1>LUANA MOTH</h1>
+            </header>
+            <div class="bio-section">
+                <div class="bio-block">
+                    <h2>THE BAND</h2>
+                    <p>TONY GIOVANNA ETC ETC ETC STORY ABOUT A GIRL</p>
+                </div>
+                <div class="bio-block">
+                    <h2>THE LEGEND</h2>
+                    <p>SHE REALLY EXISTED!!!!!!!!! SHE LIVED AROUND GIMLI!!! SHE WAS A WITCH!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Page -->
+    <div id="media" class="page-section">
+        <div class="container">
+            <div class="back-button" data-page="landing">BACK</div>
+            <header>
+                <h1>MEDIA</h1>
+            </header>
+            <section class="audio-container">
+                <audio id="mainPlayer" controls>
+                    <source src="media/album.mp3" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <div class="chapter-list">
+                    <div class="chapter-item" data-start="0">0:00 - halo near the lakebed</div>
+                    <div class="chapter-item" data-start="87">1:27 - METROXYLON</div>
+                    <div class="chapter-item" data-start="335">5:35 - its wings uncoiled in a disjointed fashion</div>
+                    <div class="chapter-item" data-start="455">7:35 - LUNA MOTH</div>
+                    <div class="chapter-item" data-start="591">9:51 - anemoia scarring</div>
+                    <div class="chapter-item" data-start="683">11:23 - PENTOMETRA'S ACID</div>
+                    <div class="chapter-item" data-start="1070">17:50 - tides of lazzaro</div>
+                    <div class="chapter-item" data-start="1186">19:46 - ATLAS MOTH</div>
+                    <div class="chapter-item" data-start="1356">22:36 - the pillars really woke up and chose violence</div>
+                    <div class="chapter-item" data-start="1486">24:36 - ENTROPY</div>
+                    <div class="chapter-item" data-start="1934">32:14 - barotrauma delirium</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Participate Page -->
+    <div id="participate" class="page-section">
+                    <div class="container">
+            <div class="back-button" data-page="landing">BACK</div>
+            <header>
+                <h1>SELECT YOUR DIVISION</h1>
+            </header>
+            <ul class="division-options">
+                <li class="division-option" data-division="quassia">PROJECT QUASSIA</li>
+                <li class="division-option" data-division="interlake">THE INTERLAKE MUSEUM OF ANEMOIA SCARRING</li>
+                <li class="division-option" data-division="yakta">PROJECT YAKTA</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Navigation System
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu options click handler
+            const menuOptions = document.querySelectorAll('.menu-option');
+            menuOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const targetPage = this.getAttribute('data-page');
+                    navigateToPage(targetPage);
+                });
+            });
+
+            // Back buttons click handler
+            const backButtons = document.querySelectorAll('.back-button');
+            backButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetPage = this.getAttribute('data-page');
+                    navigateToPage(targetPage);
+                });
+            });
+
+            // Division options hover handling
+            const divisionOptions = document.querySelectorAll('.division-option');
+            divisionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // In a real implementation, you might load division-specific content here
+                });
+            });
+
+            // Navigation function with glitch transition
+            function navigateToPage(pageId) {
+                // Get transition elements
+                const glitchTransition = document.querySelector('.glitch-transition');
+                const glitchScan = document.querySelector('.glitch-scan');
+                
+                // Determine direction (going to landing is backward, going to content is forward)
+                const isGoingBack = pageId === 'landing';
+                
+                // Select random variation for additional unpredictability
+                const variationIndex = Math.floor(Math.random() * 3);
+                
+                // Apply direction-specific effects
+                if (isGoingBack) {
+                    glitchTransition.classList.add('active', 'backward');
+                    glitchScan.style.animation = 'scanline-up 0.8s linear';
+                    
+                    // Random color variations for back transitions
+                    switch(variationIndex) {
+                        case 0:
+                            glitchTransition.style.backgroundColor = '#0a0a0a';
+                            break;
+                        case 1:
+                            glitchTransition.style.backgroundColor = '#1a0a0a'; // slight red tint
+                            break;
+                        case 2:
+                            glitchTransition.style.backgroundColor = '#0a0a1a'; // slight blue tint
+                            break;
+                    }
+                } else {
+                    glitchTransition.classList.add('active', 'forward');
+                    glitchScan.style.animation = 'scanline-down 0.8s linear';
+                    
+                    // Random effects for forward transitions
+                    switch(variationIndex) {
+                        case 0:
+                            glitchTransition.style.backgroundColor = '#0a0a0a';
+                            break;
+                        case 1:
+                            glitchTransition.style.backgroundColor = '#0a1a0a'; // slight green tint
+                            break;
+                        case 2:
+                            glitchScan.style.boxShadow = '0 0 30px rgba(0, 255, 200, 0.7)'; // brighter scan
+                            break;
+                    }
+                }
+                
+                // Add random horizontal offset to scan
+                const randomOffset = (Math.random() * 20 - 10) + 'px';
+                glitchScan.style.left = randomOffset;
+                
+                // Wait for animation before changing page
+                setTimeout(() => {
+                    // Hide all pages
+                    const pages = document.querySelectorAll('.page-section');
+                    pages.forEach(page => page.classList.remove('active'));
+                    
+                    // Show target page
+                    document.getElementById(pageId).classList.add('active');
+                    
+                    // Reset after transition completes
+                    setTimeout(() => {
+                        glitchTransition.classList.remove('active', 'forward', 'backward');
+                        glitchScan.style.animation = '';
+                        glitchScan.style.boxShadow = '0 0 20px rgba(0, 200, 255, 0.6)';
+                        glitchScan.style.left = '0';
+                        glitchTransition.style.backgroundColor = '#0a0a0a';
+                    }, 400);
+                }, 400);
+            }
+
+            // Audio player chapter selection
+            const player = document.getElementById('mainPlayer');
+            const chapters = document.querySelectorAll('.chapter-item');
+            
+            chapters.forEach(chapter => {
+                if(chapter.dataset.start) {
+                    chapter.addEventListener('click', () => {
+                        const startTime = parseInt(chapter.dataset.start);
+                        player.currentTime = startTime;
+                        player.play();
+                        updateCurrentChapter(startTime);
+                    });
+                }
+            });
+
+            function updateCurrentChapter(currentTime) {
+                chapters.forEach(chapter => {
+                    if(chapter.dataset.start) {
+                        const start = parseInt(chapter.dataset.start);
+                        const nextChapter = Array.from(chapters).find(ch => 
+                            ch.dataset.start && parseInt(ch.dataset.start) > start
+                        );
+                        const end = nextChapter ? parseInt(nextChapter.dataset.start) : player.duration;
+
+                        chapter.classList.remove('current-chapter');
+                        if(currentTime >= start && currentTime < end) {
+                            chapter.classList.add('current-chapter');
+                        }
+                    }
+                });
+            }
+
+            player.addEventListener('timeupdate', () => {
+                updateCurrentChapter(player.currentTime);
+            });
+        });
+    </script>
+</body>
+</html>
