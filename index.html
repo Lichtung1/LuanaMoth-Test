@@ -29,23 +29,35 @@
             min-height: 100vh;
             width: 100%;
             overflow-x: hidden;
-            background-color: #0a0a0a;
+            background-color: #000000;
+            color: #e0e0e0;
+        }
+        
+        /* Background image loaded after DOM is ready for better mobile performance */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url('media/Background.png');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* CRT screen effect */
+        /* CRT screen effect - optimized */
         .crt-overlay {
             content: "";
             display: block;
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             background: linear-gradient(
                 rgba(18, 16, 16, 0) 50%,
@@ -54,9 +66,10 @@
             background-size: 100% 4px;
             opacity: 0.5;
             z-index: 2;
+            will-change: transform;
         }
 
-        /* Noise overlay */
+        /* Noise overlay - original restored */
         .noise-overlay {
             content: "";
             display: block;
@@ -74,16 +87,30 @@
             z-index: 3;
             animation: noise 0.5s infinite;
         }
+        
+        @keyframes noise {
+            0% { transform: translate(0,0) }
+            10% { transform: translate(-5%,-5%) }
+            20% { transform: translate(-10%,5%) }
+            30% { transform: translate(5%,-10%) }
+            40% { transform: translate(-5%,15%) }
+            50% { transform: translate(-10%,5%) }
+            60% { transform: translate(15%,0) }
+            70% { transform: translate(0,10%) }
+            80% { transform: translate(-15%,0) }
+            90% { transform: translate(10%,5%) }
+            100% { transform: translate(5%,0) }
+        }
 
-        /* Vignette overlay */
+        /* Vignette overlay - optimized */
         .vignette-overlay {
             content: "";
             display: block;
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: radial-gradient(
                 circle at center,
                 transparent 0,
@@ -97,7 +124,7 @@
         body {
             color: #e0e0e0;
             line-height: 1;
-            animation: flicker 2s infinite;
+            animation: flicker 4s infinite;
         }
 
         @keyframes flicker {
@@ -112,21 +139,17 @@
             100% { opacity: 0.97; }
         }
 
-        @keyframes noise {
-            0% { transform: translate(0,0) }
-            10% { transform: translate(-5%,-5%) }
-            20% { transform: translate(-10%,5%) }
-            30% { transform: translate(5%,-10%) }
-            40% { transform: translate(-5%,15%) }
-            50% { transform: translate(-10%,5%) }
-            60% { transform: translate(15%,0) }
-            70% { transform: translate(0,10%) }
-            80% { transform: translate(-15%,0) }
-            90% { transform: translate(10%,5%) }
-            100% { transform: translate(5%,0) }
+        @keyframes noise-animation {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-2%, -2%); }
+            30% { transform: translate(1%, -1%); }
+            50% { transform: translate(-1%, 2%); }
+            70% { transform: translate(3%, -3%); }
+            90% { transform: translate(-2%, 2%); }
+            100% { transform: translate(0, 0); }
         }
         
-        /* Glitch transition effect */
+        /* Glitch transition effect - optimized */
         .glitch-transition {
             position: fixed;
             top: 0;
@@ -137,21 +160,21 @@
             z-index: 100;
             display: none;
             opacity: 0;
-            transition: opacity 0.1s ease;
             pointer-events: none;
+            will-change: transform, opacity;
         }
         
         .glitch-transition.active {
             display: block;
-            opacity: 1;
+            opacity: 0.7;
         }
         
         .glitch-transition.forward {
-            animation: glitchEffect-forward 0.8s forwards;
+            animation: glitchEffect-simple 0.6s forwards;
         }
         
         .glitch-transition.backward {
-            animation: glitchEffect-backward 0.8s forwards;
+            animation: glitchEffect-simple 0.6s forwards;
         }
         
         .glitch-scan {
@@ -159,303 +182,38 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 10px;
+            height: 5px;
             background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 200, 255, 0.6);
+            box-shadow: 0 0 10px rgba(0, 200, 255, 0.6);
             z-index: 101;
             opacity: 0;
+            will-change: transform, opacity;
         }
         
-        @keyframes glitchEffect {
-            0% {
-                opacity: 0;
-            }
-            5% {
-                opacity: 0.6;
-                transform: translate(5px, 0);
-            }
-            10% {
-                opacity: 0.4;
-                transform: translate(-5px, 0) scale(1.05, 1);
-            }
-            15% {
-                opacity: 0.8;
-                transform: translate(0, 0);
-            }
-            20% {
-                opacity: 0.3;
-                transform: translate(15px, 0) scale(0.95, 1);
-            }
-            25% {
-                opacity: 0.9;
-                transform: translate(-15px, 0);
-            }
-            30% {
-                opacity: 0.5;
-                transform: translate(0, 0) scale(1.1, 1);
-            }
-            35% {
-                opacity: 0.7;
-                transform: translate(5px, 0);
-            }
-            40% {
-                opacity: 0.3;
-                transform: translate(-5px, 0);
-            }
-            45% {
-                opacity: 0.9;
-                transform: translate(0, 0) scale(0.95, 1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: translate(10px, 0);
-            }
-            55% {
-                opacity: 0.8;
-                transform: translate(-10px, 0) scale(1.05, 1);
-            }
-            60% {
-                opacity: 0.4;
-                transform: translate(0, 0);
-            }
-            65% {
-                opacity: 0.9;
-                transform: translate(5px, 0);
-            }
-            70% {
-                opacity: 0.7;
-                transform: translate(-5px, 0) scale(0.98, 1);
-            }
-            75% {
-                opacity: 0.5;
-                transform: translate(0, 0);
-            }
-            80% {
-                opacity: 0.3;
-                transform: translate(8px, 0) scale(1.02, 1);
-            }
-            85% {
-                opacity: 0.9;
-                transform: translate(-8px, 0);
-            }
-            90% {
-                opacity: 0.6;
-                transform: translate(0, 0);
-            }
-            95% {
-                opacity: 0.5;
-                transform: translate(3px, 0);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(0, 0);
-            }
+        @keyframes glitchEffect-simple {
+            0% { opacity: 0; }
+            10% { opacity: 0.7; transform: translateX(-5px); }
+            20% { opacity: 0.6; transform: translateX(5px); }
+            30% { opacity: 0.7; transform: translateX(-3px); }
+            40% { opacity: 0.6; transform: translateX(3px); }
+            50% { opacity: 0.7; transform: translateX(-1px); }
+            60% { opacity: 0.6; transform: translateX(1px); }
+            70% { opacity: 0.7; transform: translateX(0); }
+            100% { opacity: 0; }
         }
         
         @keyframes scanline-down {
-            0% {
-                top: -10px;
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            80% {
-                opacity: 0.8;
-            }
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
+            0% { top: -5px; opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { top: 100%; opacity: 0; }
         }
         
         @keyframes scanline-up {
-            0% {
-                top: 100%;
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            80% {
-                opacity: 0.8;
-            }
-            100% {
-                top: -10px;
-                opacity: 0;
-            }
-        }
-        
-        @keyframes glitchEffect-forward {
-            0% {
-                opacity: 0;
-            }
-            5% {
-                opacity: 0.6;
-                transform: translate(5px, 0);
-            }
-            10% {
-                opacity: 0.4;
-                transform: translate(-5px, 0) scale(1.05, 1);
-            }
-            15% {
-                opacity: 0.8;
-                transform: translate(0, 0);
-            }
-            20% {
-                opacity: 0.3;
-                transform: translate(15px, 0) scale(0.95, 1);
-            }
-            25% {
-                opacity: 0.9;
-                transform: translate(-15px, 0);
-            }
-            30% {
-                opacity: 0.5;
-                transform: translate(0, 0) scale(1.1, 1);
-            }
-            35% {
-                opacity: 0.7;
-                transform: translate(5px, 0);
-            }
-            40% {
-                opacity: 0.3;
-                transform: translate(-5px, 0);
-            }
-            45% {
-                opacity: 0.9;
-                transform: translate(0, 0) scale(0.95, 1);
-            }
-            50% {
-                opacity: 0.5;
-                transform: translate(10px, 0);
-            }
-            55% {
-                opacity: 0.8;
-                transform: translate(-10px, 0) scale(1.05, 1);
-            }
-            60% {
-                opacity: 0.4;
-                transform: translate(0, 0);
-            }
-            65% {
-                opacity: 0.9;
-                transform: translate(5px, 0);
-            }
-            70% {
-                opacity: 0.7;
-                transform: translate(-5px, 0) scale(0.98, 1);
-            }
-            75% {
-                opacity: 0.5;
-                transform: translate(0, 0);
-            }
-            80% {
-                opacity: 0.3;
-                transform: translate(8px, 0) scale(1.02, 1);
-            }
-            85% {
-                opacity: 0.9;
-                transform: translate(-8px, 0);
-            }
-            90% {
-                opacity: 0.6;
-                transform: translate(0, 0);
-            }
-            95% {
-                opacity: 0.5;
-                transform: translate(3px, 0);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(0, 0);
-            }
-        }
-        
-        @keyframes glitchEffect-backward {
-            0% {
-                opacity: 0;
-            }
-            5% {
-                opacity: 0.7;
-                transform: translate(-8px, 0);
-            }
-            10% {
-                opacity: 0.5;
-                transform: translate(8px, 0) scale(0.97, 1);
-            }
-            15% {
-                opacity: 0.9;
-                transform: translate(0, 0);
-            }
-            20% {
-                opacity: 0.4;
-                transform: translate(-12px, 0) scale(1.03, 1);
-            }
-            25% {
-                opacity: 0.8;
-                transform: translate(12px, 0);
-            }
-            30% {
-                opacity: 0.3;
-                transform: translate(0, 0) scale(0.94, 1);
-            }
-            35% {
-                opacity: 0.6;
-                transform: translate(-7px, 0);
-            }
-            40% {
-                opacity: 0.2;
-                transform: translate(7px, 0);
-            }
-            45% {
-                opacity: 0.7;
-                transform: translate(0, 0) scale(1.05, 1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: translate(-5px, 0);
-            }
-            55% {
-                opacity: 0.9;
-                transform: translate(5px, 0) scale(0.98, 1);
-            }
-            60% {
-                opacity: 0.5;
-                transform: translate(0, 0);
-            }
-            65% {
-                opacity: 0.8;
-                transform: translate(-3px, 0);
-            }
-            70% {
-                opacity: 0.6;
-                transform: translate(3px, 0) scale(1.02, 1);
-            }
-            75% {
-                opacity: 0.4;
-                transform: translate(0, 0);
-            }
-            80% {
-                opacity: 0.2;
-                transform: translate(-10px, 0) scale(0.96, 1);
-            }
-            85% {
-                opacity: 0.7;
-                transform: translate(10px, 0);
-            }
-            90% {
-                opacity: 0.5;
-                transform: translate(0, 0);
-            }
-            95% {
-                opacity: 0.3;
-                transform: translate(-2px, 0);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(0, 0);
-            }
+            0% { top: 100%; opacity: 0; }
+            10% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { top: -5px; opacity: 0; }
         }
 
         /* Enhance the visibility of content against the background image */
@@ -488,6 +246,7 @@
         header {
             padding: 2rem;
             background-color: transparent;
+            text-align: center;
         }
 
         h1 {
@@ -547,7 +306,7 @@
             list-style: none;
             margin: 2rem auto;
             text-align: left;
-            width: 100%;
+            width: fit-content;
             max-width: 800px;
         }
 
@@ -607,7 +366,7 @@
 
         .bio-block p {
             font-size: 1.5rem;
-            line-height: 1.5;
+            line-height: a1.5;
             margin-bottom: 1rem;
         }
 
@@ -628,8 +387,6 @@
             list-style: none;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            grid-auto-flow: column;
-            grid-template-rows: repeat(6, auto);
             gap: 1rem;
         }
 
@@ -669,16 +426,17 @@
             text-shadow: 0 0 5px rgba(224, 224, 224, 0.5),
                          0 0 10px rgba(224, 224, 224, 0.3);
             transition: transform 0.3s ease;
+            z-index: 5;
         }
 
         .back-button:hover:before {
-            content: ">> ";      
+            content: "<< ";      
             position: absolute;
             left: 0; 
         }
 
         .back-button:hover {
-            transform: translateX(5px);
+            transform: translateX(-5px);
         }
 
         /* Page sections */
@@ -690,17 +448,36 @@
             display: block;
         }
 
+        /* Mobile optimizations */
         @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+                width: 100%;
+            }
+            
+            .container {
+                padding: 1rem;
+                padding-top: 4rem;
+            }
+            
             h1 {
-                font-size: 3.5rem;
+                font-size: 2.5rem;
+                margin-top: 1rem;
             }
 
             .menu-option {
-                font-size: 2rem;
+                font-size: 1.8rem;
+                padding-left: 2.5rem;
+            }
+            
+            .menu-options {
+                margin: 2rem auto;
             }
 
             .division-option {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+                padding-left: 2.5rem;
+                margin: 1.5rem 0;
             }
 
             .division-description {
@@ -711,13 +488,40 @@
 
             .chapter-list {
                 grid-template-columns: 1fr;
-                grid-auto-flow: row;
-                grid-template-rows: auto;
             }
 
             .chapter-item {
+                font-size: 1rem;
+                min-height: 3rem;
+                padding: 0.8rem;
+            }
+            
+            .bio-block h2 {
+                font-size: 1.8rem;
+            }
+            
+            .bio-block p {
                 font-size: 1.2rem;
-                min-height: 3.5rem;
+            }
+            
+            .back-button {
+                font-size: 1.2rem;
+                top: 1rem;
+                left: 1rem;
+                padding-left: 2.5rem;
+            }
+            
+            audio {
+                height: 40px;
+            }
+            
+            /* Lighter effects for mobile */
+            .noise-overlay {
+                opacity: 0.07;
+            }
+            
+            .glitch-transition.active {
+                opacity: 0.5;
             }
         }
     </style>
@@ -726,6 +530,7 @@
     <div class="vignette-overlay"></div>
     <div class="crt-overlay"></div>
     <div class="noise-overlay"></div>
+    <div class="bg-image"></div>
     <div class="glitch-transition">
         <div class="glitch-scan"></div>
     </div>
@@ -773,7 +578,7 @@
             </header>
             <section class="audio-container">
                 <audio id="mainPlayer" controls>
-                    <source src="media/album.mp3" type="audio/mp3">
+                    <source src="media/album.wav" type="audio/wav">
                     Your browser does not support the audio element.
                 </audio>
 
@@ -796,7 +601,7 @@
 
     <!-- Participate Page -->
     <div id="participate" class="page-section">
-                    <div class="container">
+        <div class="container">
             <div class="back-button" data-page="landing">BACK</div>
             <header>
                 <h1>SELECT YOUR DIVISION</h1>
@@ -810,8 +615,15 @@
     </div>
 
     <script>
-        // Navigation System
         document.addEventListener('DOMContentLoaded', function() {
+            // Load background image properly
+            const bgImage = document.querySelector('.bg-image');
+            setTimeout(() => {
+                bgImage.style.opacity = '1';
+            }, 100);
+            
+            // No need to disable noise on mobile - using original noise effect
+            
             // Menu options click handler
             const menuOptions = document.querySelectorAll('.menu-option');
             menuOptions.forEach(option => {
@@ -838,7 +650,7 @@
                 });
             });
 
-            // Navigation function with glitch transition
+            // Optimized navigation function with simpler glitch transition
             function navigateToPage(pageId) {
                 // Get transition elements
                 const glitchTransition = document.querySelector('.glitch-transition');
@@ -846,50 +658,26 @@
                 
                 // Determine direction (going to landing is backward, going to content is forward)
                 const isGoingBack = pageId === 'landing';
-                
-                // Select random variation for additional unpredictability
-                const variationIndex = Math.floor(Math.random() * 3);
+                const isMobile = window.matchMedia('(max-width: 768px)').matches;
                 
                 // Apply direction-specific effects
                 if (isGoingBack) {
                     glitchTransition.classList.add('active', 'backward');
-                    glitchScan.style.animation = 'scanline-up 0.8s linear';
+                    glitchScan.style.animation = 'scanline-up 0.6s linear';
                     
-                    // Random color variations for back transitions
-                    switch(variationIndex) {
-                        case 0:
-                            glitchTransition.style.backgroundColor = '#0a0a0a';
-                            break;
-                        case 1:
-                            glitchTransition.style.backgroundColor = '#1a0a0a'; // slight red tint
-                            break;
-                        case 2:
-                            glitchTransition.style.backgroundColor = '#0a0a1a'; // slight blue tint
-                            break;
-                    }
+                    // Simple color variation for back transitions
+                    glitchTransition.style.backgroundColor = isMobile ? '#0a0a0a' : '#0a0a1a';
                 } else {
                     glitchTransition.classList.add('active', 'forward');
-                    glitchScan.style.animation = 'scanline-down 0.8s linear';
+                    glitchScan.style.animation = 'scanline-down 0.6s linear';
                     
-                    // Random effects for forward transitions
-                    switch(variationIndex) {
-                        case 0:
-                            glitchTransition.style.backgroundColor = '#0a0a0a';
-                            break;
-                        case 1:
-                            glitchTransition.style.backgroundColor = '#0a1a0a'; // slight green tint
-                            break;
-                        case 2:
-                            glitchScan.style.boxShadow = '0 0 30px rgba(0, 255, 200, 0.7)'; // brighter scan
-                            break;
-                    }
+                    // Simple color variation for forward transitions
+                    glitchTransition.style.backgroundColor = isMobile ? '#0a0a0a' : '#0a1a0a';
                 }
                 
-                // Add random horizontal offset to scan
-                const randomOffset = (Math.random() * 20 - 10) + 'px';
-                glitchScan.style.left = randomOffset;
+                // Wait for animation before changing page (shorter for mobile)
+                const transitionTime = isMobile ? 300 : 400;
                 
-                // Wait for animation before changing page
                 setTimeout(() => {
                     // Hide all pages
                     const pages = document.querySelectorAll('.page-section');
@@ -902,11 +690,10 @@
                     setTimeout(() => {
                         glitchTransition.classList.remove('active', 'forward', 'backward');
                         glitchScan.style.animation = '';
-                        glitchScan.style.boxShadow = '0 0 20px rgba(0, 200, 255, 0.6)';
                         glitchScan.style.left = '0';
                         glitchTransition.style.backgroundColor = '#0a0a0a';
-                    }, 400);
-                }, 400);
+                    }, transitionTime);
+                }, transitionTime);
             }
 
             // Audio player chapter selection
