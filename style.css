@@ -410,10 +410,10 @@ audio {
     }
     
     h1 {
-        font-size: 3.5rem;
+        font-size: 3rem;
         margin-top: 1rem;
         letter-spacing: 1px;    
-        
+        white-space: nowrap;    
     }
 
     .menu-option {
@@ -469,7 +469,7 @@ audio {
     }
     
     .noise-overlay {
-        opacity: 0.15; 
+        opacity: 0.25; 
     }
     
     .glitch-transition.active {
