@@ -34,16 +34,8 @@
             <header>
                 <h1>LUANA MOTH</h1>
             </header>
-            <div class="bio-section">
-                <div class="bio-block">
-                    <h2>THE BAND</h2>
-                    <p>TONY GIOVANNA ETC ETC ETC STORY ABOUT A GIRL</p>
-                </div>
-                <div class="bio-block">
-                    <h2>THE LEGEND</h2>
-                    <p>SHE REALLY EXISTED!!!!!!!!! SHE LIVED AROUND GIMLI!!! SHE WAS A WITCH!</p>
-                </div>
-            </div>
+                <div class="bio-section" id="bioContent">
+                    </div>
         </div>
     </div>
 
@@ -78,14 +70,22 @@
     <div id="participate" class="page-section">
         <div class="container">
             <div class="back-button" data-page="landing">BACK</div>
-            <header>
-                <h1>SELECT YOUR DIVISION</h1>
-            </header>
-            <ul class="division-options">
-                <li class="division-option" data-division="quassia">PROJECT QUASSIA</li>
-                <li class="division-option" data-division="interlake">THE INTERLAKE MUSEUM OF ANEMOIA SCARRING</li>
-                <li class="division-option" data-division="yakta">PROJECT YAKTA</li>
-            </ul>
+            <div id="participate-options">
+                <header>
+                    <h1>SELECT YOUR DIVISION</h1>
+                </header>
+                <ul class="division-options">
+                    <li class="division-option" data-division="interlake">THE INTERLAKE MUSEUM OF ANEMOIA SCARRING</li>
+                    <li class="division-option" data-division="yakta">PROJECT YAKTA</li>
+                </ul>
+            </div>
+            <div id="interlake-museum-content" style="display: none;">
+                <header>
+                    <h1 id="museum-title"></h1>
+                </header>
+                <div id="museum-text"></div>
+                <div id="museum-images" class="museum-images"></div>
+            </div>
         </div>
     </div>
 
