@@ -1,105 +1,3 @@
-// --- New Content Loading Logic ---
-
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', loadBioContent);
-
-async function loadBioContent() {
-    try {
-        const response = await fetch('content.json');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        const bioContainer = document.getElementById('bioContent');
-        if (bioContainer) {
-            bioContainer.innerHTML = ''; // Clear existing content
-
-            // Create and append The Band section
-            bioContainer.appendChild(createBioBlock(data.band));
-
-            // Create and append The Discovery section
-            bioContainer.appendChild(createBioBlock(data.theDiscovery));
-
-            // Create and append The Enigma section
-            bioContainer.appendChild(createBioBlock(data.theEnigma));
-        }
-    } catch (error) {
-        console.error('Error loading bio content:', error);
-    }
-}
-
-function createBioBlock(contentData) {
-    const bioBlock = document.createElement('div');
-    bioBlock.classList.add('bio-block');
-
-    const title = document.createElement('h2');
-    title.textContent = contentData.title;
-    bioBlock.appendChild(title);
-
-    contentData.paragraphs.forEach(pText => {
-        const paragraph = document.createElement('p');
-        paragraph.textContent = pText;
-        bioBlock.appendChild(paragraph);
-    });
-
-    if (contentData.image) {
-        const img = document.createElement('img');
-        img.src = contentData.image;
-        img.alt = `Image for ${contentData.title}`;
-        // You'll need to add a class to your CSS to style this image
-        img.classList.add('bio-image'); 
-        bioBlock.appendChild(img);
-    }
-
-    return bioBlock;
-}
-
-async function loadInterlakeMuseumContent() {
-    try {
-        const response = await fetch('participate_content.json');
-        if (!response.ok) {
-            throw new Error('Could not load participate content.');
-        }
-        const data = await response.json();
-        const interlakeData = data.interlake;
-
-        // Hide the options and show the content
-        document.getElementById('participate-options').style.display = 'none';
-        const museumContent = document.getElementById('interlake-museum-content');
-        museumContent.style.display = 'block';
-
-        // Populate the title
-        document.getElementById('museum-title').textContent = interlakeData.title;
-
-        // Create and populate the text container
-        const museumTextContainer = document.createElement('div');
-        museumTextContainer.classList.add('museum-text-container');
-        interlakeData.paragraphs.forEach(pText => {
-            const p = document.createElement('p');
-            p.textContent = pText;
-            museumTextContainer.appendChild(p);
-        });
-
-        // Create and populate the images container
-        const museumImagesContainer = document.createElement('div');
-        museumImagesContainer.classList.add('museum-images');
-        interlakeData.images.forEach(imageSrc => {
-            const img = document.createElement('img');
-            img.src = imageSrc;
-            img.alt = interlakeData.title + ' artifact';
-            museumImagesContainer.appendChild(img);
-        });
-
-        // Append the text container first, then the images container
-        museumContent.appendChild(museumTextContainer);
-        museumContent.appendChild(museumImagesContainer);
-
-    } catch (error) {
-        console.error('Error loading museum content:', error);
-    }
-}
-
 // --- Page Setup and Navigation ---
 
 function setTrueViewportHeight() {
@@ -183,6 +81,109 @@ function navigateToPage(pageId) {
     }, transitionTime);
 }
 
+// --- Reusable Content Builder Function ---
+
+// A single function to create a content block with consistent styling
+function createContentBlock(contentData) {
+    const contentBlock = document.createElement('div');
+    contentBlock.classList.add('bio-block');
+
+    const title = document.createElement('h2');
+    title.textContent = contentData.title;
+    contentBlock.appendChild(title);
+
+    if (contentData.paragraphs) {
+        contentData.paragraphs.forEach(pText => {
+            const paragraph = document.createElement('p');
+            paragraph.textContent = pText;
+            contentBlock.appendChild(paragraph);
+        });
+    }
+
+    if (contentData.image) {
+        const img = document.createElement('img');
+        img.src = contentData.image;
+        img.alt = `Image for ${contentData.title}`;
+        img.classList.add('bio-image'); 
+        contentBlock.appendChild(img);
+    }
+    
+    if (contentData.images) {
+        const imagesContainer = document.createElement('div');
+        imagesContainer.classList.add('museum-images');
+        contentData.images.forEach(imageSrc => {
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.alt = contentData.title + ' artifact';
+            imagesContainer.appendChild(img);
+        });
+        contentBlock.appendChild(imagesContainer);
+    }
+
+    return contentBlock;
+}
+
+
+// --- Bio Content Loader ---
+
+document.addEventListener('DOMContentLoaded', loadBioContent);
+
+async function loadBioContent() {
+    try {
+        const response = await fetch('content.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        const bioContainer = document.getElementById('bioContent');
+        if (bioContainer) {
+            bioContainer.innerHTML = '';
+            bioContainer.appendChild(createContentBlock(data.band));
+            bioContainer.appendChild(createContentBlock(data.theLegend));
+            bioContainer.appendChild(createContentBlock(data.theEnigma));
+        }
+    } catch (error) {
+        console.error('Error loading bio content:', error);
+    }
+}
+
+// --- Participate Content Loader ---
+
+const divisionOptions = document.querySelectorAll('.division-option');
+divisionOptions.forEach(option => {
+    option.addEventListener('click', function() {
+        const divisionId = this.getAttribute('data-division');
+        if (divisionId === 'interlake') {
+            loadInterlakeMuseumContent();
+        } else if (divisionId === 'yakta') {
+            window.location.href = 'https://lichtung1.github.io/LMG/';
+        }
+    });
+});
+
+async function loadInterlakeMuseumContent() {
+    try {
+        const response = await fetch('participate_content.json');
+        if (!response.ok) {
+            throw new Error('Could not load participate content.');
+        }
+        const data = await response.json();
+        const interlakeData = data.interlake;
+
+        document.getElementById('participate-options').style.display = 'none';
+        const museumContent = document.getElementById('interlake-museum-content');
+        museumContent.innerHTML = ''; // Clear old content
+        museumContent.style.display = 'block';
+
+        museumContent.appendChild(createContentBlock(interlakeData));
+
+    } catch (error) {
+        console.error('Error loading museum content:', error);
+    }
+}
+
+
 // --- Efficient Audio Player Logic ---
 
 const player = document.getElementById('mainPlayer');
@@ -243,21 +244,3 @@ player.addEventListener('timeupdate', () => updateCurrentChapter(player.currentT
 if (player.readyState >= 1) {
     setupChapters();
 }
-
-// --- PARTICIPATE PAGE CONTENT LOADER ---
-
-const divisionOptions = document.querySelectorAll('.division-option');
-
-divisionOptions.forEach(option => {
-    option.addEventListener('click', function() {
-        const divisionId = this.getAttribute('data-division');
-        if (divisionId === 'interlake') {
-            loadInterlakeMuseumContent();
-        } else if (divisionId === 'yakta') {
-            window.location.href = 'https://lichtung1.github.io/LMG/';
-        }
-    });
-});
-
-
-
