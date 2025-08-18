@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUANA MOTH</title>
-    <link rel="stylesheet" href="style.css?v=1.3">
+    <link rel="stylesheet" href="style.css?v=1.4">
 </head>
 <body>
     <div class="bg-image"></div>
@@ -23,7 +23,9 @@
             <ul class="menu-options">
                 <li class="menu-option" data-page="bio">BIO</li>
                 <li class="menu-option" data-page="media">MEDIA</li>
-                <li class="menu-option" data-page="participate">PARTICIPATE</li>
+                <li class="menu-option" data-page="museum">MUSEUM</li>
+                <li><a href="https://lichtung1.github.io/LMG/" class="menu-option game-link">GAME</a></li>
+                <li class="menu-option" data-page="past-shows">PAST SHOWS</li>
             </ul>
         </div>
     </div>
@@ -34,8 +36,8 @@
             <header>
                 <h1>LUANA MOTH</h1>
             </header>
-                <div class="bio-section" id="bioContent">
-                    </div>
+            <div class="bio-section" id="bioContent">
+            </div>
         </div>
     </div>
 
@@ -60,35 +62,35 @@
                     <div class="chapter-item" data-start="1070">17:50 - tides of lazzaro</div>
                     <div class="chapter-item" data-start="1186">19:46 - ATLAS MOTH</div>
                     <div class="chapter-item" data-start="1356">22:36 - the pillars really woke up and chose violence</div>
-                    <div class="chapter-item" data-start="1486">24:36 - ENTROPY</div>
+                    <div class="chapter-item" data-start="1486">24:46 - ENTROPY</div>
                     <div class="chapter-item" data-start="1934">32:14 - barotrauma delirium</div>
                 </div>
             </section>
         </div>
     </div>
 
-    <div id="participate" class="page-section">
+    <div id="museum" class="page-section">
         <div class="container">
             <div class="back-button" data-page="landing">BACK</div>
-            <div id="participate-options">
-                <header>
-                    <h1>SELECT YOUR DIVISION</h1>
-                </header>
-                <ul class="division-options">
-                    <li class="division-option" data-division="interlake">THE INTERLAKE MUSEUM OF ANEMOIA SCARRING</li>
-                    <li class="division-option" data-division="yakta">PROJECT YAKTA</li>
-                </ul>
-            </div>
-            <div id="interlake-museum-content" style="display: none;">
-                <header>
-                    <h1 id="museum-title"></h1>
-                </header>
-                <div id="museum-text"></div>
-                <div id="museum-images" class="museum-images"></div>
+            <header>
+                <h1>MUSEUM</h1>
+            </header>
+            <div id="museumContent"></div> 
+        </div>
+    </div>
+
+    <div id="past-shows" class="page-section">
+        <div class="container">
+            <div class="back-button" data-page="landing">BACK</div>
+            <header>
+                <h1>PAST SHOWS</h1>
+            </header>
+            <div id="pastShowsContent">
+                <p style="text-align: center; font-size: 1.5rem;">Archive under construction. Please check back later.</p>
             </div>
         </div>
     </div>
 
-    <script src="script.js"?v=1.3></script>
+    <script src="script.js?v=1.4"></script>
 </body>
 </html>

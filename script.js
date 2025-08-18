@@ -126,7 +126,10 @@ function createContentBlock(contentData) {
 
 // --- Bio Content Loader ---
 
-document.addEventListener('DOMContentLoaded', loadBioContent);
+document.addEventListener('DOMContentLoaded', () => {
+    loadBioContent();
+    loadMuseumContent(); 
+});
 
 async function loadBioContent() {
     try {
@@ -140,7 +143,7 @@ async function loadBioContent() {
         if (bioContainer) {
             bioContainer.innerHTML = '';
             bioContainer.appendChild(createContentBlock(data.band));
-            bioContainer.appendChild(createContentBlock(data.theLegend));
+            bioContainer.appendChild(createContentBlock(data.theDiscovery));
             bioContainer.appendChild(createContentBlock(data.theEnigma));
         }
     } catch (error) {
@@ -148,36 +151,20 @@ async function loadBioContent() {
     }
 }
 
-// --- Participate Content Loader ---
 
-const divisionOptions = document.querySelectorAll('.division-option');
-divisionOptions.forEach(option => {
-    option.addEventListener('click', function() {
-        const divisionId = this.getAttribute('data-division');
-        if (divisionId === 'interlake') {
-            loadInterlakeMuseumContent();
-        } else if (divisionId === 'yakta') {
-            window.location.href = 'https://lichtung1.github.io/LMG/';
-        }
-    });
-});
-
-async function loadInterlakeMuseumContent() {
+async function loadMuseumContent() {
     try {
         const response = await fetch('participate_content.json');
         if (!response.ok) {
-            throw new Error('Could not load participate content.');
+            throw new Error('Could not load museum content.');
         }
         const data = await response.json();
-        const interlakeData = data.interlake;
-
-        document.getElementById('participate-options').style.display = 'none';
-        const museumContent = document.getElementById('interlake-museum-content');
-        museumContent.innerHTML = ''; // Clear old content
-        museumContent.style.display = 'block';
-
-        museumContent.appendChild(createContentBlock(interlakeData));
-
+        
+        const museumContainer = document.getElementById('museumContent');
+        if (museumContainer) {
+            museumContainer.innerHTML = ''; // Clear previous content
+            museumContainer.appendChild(createContentBlock(data.interlake));
+        }
     } catch (error) {
         console.error('Error loading museum content:', error);
     }
