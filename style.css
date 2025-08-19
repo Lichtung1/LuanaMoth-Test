@@ -5,6 +5,13 @@
     font-style: normal;
     font-display: swap;
 }
+@font-face {
+    font-family: 'VT323';
+    src: url('media/VT323-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     margin: 0;
@@ -216,6 +223,11 @@ h1 {
 
 header p {
     font-size: 1.5rem;
+}
+
+p {
+    font-family: 'VT323', monospace;
+    line-height: 1.5; /* This adds a little more space between lines for better readability */
 }
 
 .menu-options {
@@ -436,7 +448,7 @@ audio {
         height: 40px;
     }
     .noise-overlay {
-        opacity: 0.2; 
+        opacity: 0.125; 
     }
     .glitch-transition.active {
         opacity: 0.5;
