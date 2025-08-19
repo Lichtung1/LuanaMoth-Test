@@ -83,9 +83,8 @@ function navigateToPage(pageId) {
     }, transitionTime);
 }
 
-// --- Reusable Content Builder Function ---
+// --- Reusable Content Builder Function (MODIFIED) ---
 
-// A single function to create a content block with consistent styling
 function createContentBlock(contentData) {
     const contentBlock = document.createElement('div');
     contentBlock.classList.add('bio-block');
@@ -106,10 +105,11 @@ function createContentBlock(contentData) {
         const img = document.createElement('img');
         img.src = contentData.image;
         img.alt = `Image for ${contentData.title}`;
-        img.classList.add('bio-image'); 
+        img.classList.add('bio-image');
         contentBlock.appendChild(img);
     }
-    
+
+    // THIS BLOCK IS FOR THE MUSEUM IMAGES (can be left as is)
     if (contentData.images) {
         const imagesContainer = document.createElement('div');
         imagesContainer.classList.add('museum-images');
@@ -120,6 +120,33 @@ function createContentBlock(contentData) {
             imagesContainer.appendChild(img);
         });
         contentBlock.appendChild(imagesContainer);
+    }
+    
+    // ** NEW ** THIS BLOCK HANDLES THE PHOTO CREDITS FOR PAST SHOWS
+    if (contentData.image_credits) {
+        const galleryContainer = document.createElement('div');
+        galleryContainer.classList.add('show-gallery');
+
+        contentData.image_credits.forEach(creditGroup => {
+            // Create a credit paragraph for the photographer
+            const creditText = document.createElement('p');
+            creditText.classList.add('photo-credit');
+            creditText.textContent = `Photos by: ${creditGroup.photographer}`;
+            galleryContainer.appendChild(creditText);
+
+            // Create a container for this photographer's images
+            const imagesContainer = document.createElement('div');
+            imagesContainer.classList.add('museum-images'); // Re-using existing class for styling
+
+            creditGroup.images.forEach(imageSrc => {
+                const img = document.createElement('img');
+                img.src = imageSrc;
+                img.alt = `${contentData.title} - Photo by ${creditGroup.photographer}`;
+                imagesContainer.appendChild(img);
+            });
+            galleryContainer.appendChild(imagesContainer);
+        });
+        contentBlock.appendChild(galleryContainer);
     }
 
     return contentBlock;
@@ -172,7 +199,7 @@ async function loadMuseumContent() {
     }
 }
 
-// --- Past Shows Content Loader ---
+// --- Past Shows Content Loader (MODIFIED) ---
 
 async function loadPastShows() {
     try {
@@ -189,12 +216,13 @@ async function loadPastShows() {
             shows.forEach(show => {
                 const showTitle = show.with ? `${show.date} at ${show.venue} with ${show.with}` : `${show.date} at ${show.venue}`;
                 const showBody = show.body ? [show.body] : [];
-                const showImages = show.images ? show.images : [];
+                // ** NEW ** Get the image_credits object
+                const showImageCredits = show.image_credits ? show.image_credits : [];
 
                 const showBlock = createContentBlock({
                     title: showTitle,
                     paragraphs: showBody,
-                    images: showImages
+                    image_credits: showImageCredits // Pass the new data structure here
                 });
                 showsContainer.appendChild(showBlock);
             });
