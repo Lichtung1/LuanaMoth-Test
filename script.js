@@ -22,6 +22,17 @@ menuOptions.forEach(option => {
     option.addEventListener('click', function() {
         const targetPage = this.getAttribute('data-page');
         navigateToPage(targetPage);
+
+        // Load content for specific pages
+        if (targetPage === 'bio') {
+            loadBioContent();
+        } else if (targetPage === 'media') {
+            // No content to load on media, audio player is static
+        } else if (targetPage === 'museum') {
+            loadMuseumContent();
+        } else if (targetPage === 'past-shows') {
+            loadPastShows();
+        }
     });
 });
 
@@ -30,15 +41,6 @@ const backButtons = document.querySelectorAll('.back-button');
 backButtons.forEach(button => {
     button.addEventListener('click', function() {
         const targetPage = this.getAttribute('data-page');
-
-        // Check if the back button is on the "participate" page
-        const parentPage = this.closest('.page-section');
-        if (parentPage && parentPage.id === 'participate') {
-            // Reset the content on the "participate" page
-            document.getElementById('participate-options').style.display = 'block';
-            document.getElementById('interlake-museum-content').style.display = 'none';
-        }
-
         navigateToPage(targetPage);
     });
 });
@@ -126,10 +128,7 @@ function createContentBlock(contentData) {
 
 // --- Bio Content Loader ---
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadBioContent();
-    loadMuseumContent(); 
-});
+document.addEventListener('DOMContentLoaded', loadBioContent);
 
 async function loadBioContent() {
     try {
@@ -152,6 +151,8 @@ async function loadBioContent() {
 }
 
 
+// --- Museum Content Loader ---
+
 async function loadMuseumContent() {
     try {
         const response = await fetch('participate_content.json');
@@ -159,14 +160,47 @@ async function loadMuseumContent() {
             throw new Error('Could not load museum content.');
         }
         const data = await response.json();
-        
-        const museumContainer = document.getElementById('museumContent');
-        if (museumContainer) {
-            museumContainer.innerHTML = ''; // Clear previous content
-            museumContainer.appendChild(createContentBlock(data.interlake));
+        const museumData = data.interlake;
+
+        const museumContent = document.getElementById('museumContent');
+        if (museumContent) {
+            museumContent.innerHTML = ''; // Clear old content
+            museumContent.appendChild(createContentBlock(museumData));
         }
     } catch (error) {
         console.error('Error loading museum content:', error);
+    }
+}
+
+// --- Past Shows Content Loader ---
+
+async function loadPastShows() {
+    try {
+        const response = await fetch('past_shows.json');
+        if (!response.ok) {
+            throw new Error('Could not load past shows content.');
+        }
+        const shows = await response.json();
+        
+        const showsContainer = document.getElementById('pastShowsContent');
+        if (showsContainer) {
+            showsContainer.innerHTML = ''; // Clear previous content
+
+            shows.forEach(show => {
+                const showTitle = show.with ? `${show.date} at ${show.venue} with ${show.with}` : `${show.date} at ${show.venue}`;
+                const showBody = show.body ? [show.body] : [];
+                const showImages = show.images ? show.images : [];
+
+                const showBlock = createContentBlock({
+                    title: showTitle,
+                    paragraphs: showBody,
+                    images: showImages
+                });
+                showsContainer.appendChild(showBlock);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading past shows content:', error);
     }
 }
 
